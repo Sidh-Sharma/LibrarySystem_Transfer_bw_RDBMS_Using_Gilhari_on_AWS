@@ -1,0 +1,1 @@
+docker run  -p 8080:8081 gilhari5_dest_postgres_aws:2.0

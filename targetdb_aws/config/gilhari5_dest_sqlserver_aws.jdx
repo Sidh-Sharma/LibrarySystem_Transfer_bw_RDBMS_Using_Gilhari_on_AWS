@@ -1,0 +1,18 @@
+JDX_DATABASE JDX:jdbc:sqlserver://target-db2.cj2a0e4oq8nt.ap-south-1.rds.amazonaws.com:1433;databaseName=db2;encrypt=true;trustServerCertificate=true;allowPublicKeyRetrieval=true;USER=g5;PASSWORD=software_tree5;JDX_DBTYPE=GENERIC;DEBUG_LEVEL=3
+JDBC_DRIVER com.microsoft.sqlserver.jdbc.SQLServerDriver
+JDX_OBJECT_MODEL_PACKAGE com.mycompany.gilhari5
+JDX_SUPERCLASS_NAME com.softwaretree.jdx.JDX_JSONObject
+;
+
+CLASS .LoanHist TABLE loan
+    VIRTUAL_ATTRIB book_id ATTRIB_TYPE int
+    VIRTUAL_ATTRIB loan_id ATTRIB_TYPE int
+    VIRTUAL_ATTRIB member_id ATTRIB_TYPE int
+    VIRTUAL_ATTRIB return_date ATTRIB_TYPE java.lang.String
+    VIRTUAL_ATTRIB loan_date ATTRIB_TYPE java.lang.String
+    PRIMARY_KEY loan_id 
+    SQLMAP FOR book_id NULLABLE
+    SQLMAP FOR member_id NULLABLE
+    SQLMAP FOR return_date NULLABLE
+    SQLMAP FOR loan_date NULLABLE
+;

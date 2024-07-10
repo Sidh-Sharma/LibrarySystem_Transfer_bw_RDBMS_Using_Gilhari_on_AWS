@@ -1,0 +1,72 @@
+REM
+REM JDX (version: 05.03) reverse engineered config file
+REM JDX is a product of Software Tree, LLC.
+REM Date: Tue Jul 02 15:59:31 IST 2024
+REM
+
+JDX_DATABASE JDX:jdbc:mysql://source-db.cj2a0e4oq8nt.ap-south-1.rds.amazonaws.com:3306/db1;USER=g5;PASSWORD=software_tree5;JDX_DBTYPE=MYSQL;DEBUG_LEVEL=3
+JDBC_DRIVER com.mysql.cj.jdbc.Driver
+JDX_OBJECT_MODEL_PACKAGE com.mycompany.gilhari5
+JDX_SUPERCLASS_NAME com.mycompany.gilhari5.jdx.JDX_JSONObject
+JDX_GENERATE_ACCESSOR_METHODS FALSE
+JDX_GENERATE_JSON_MAPPINGS TRUE
+;
+CLASS .Members TABLE members
+    VIRTUAL_ATTRIB phone ATTRIB_TYPE java.lang.String
+    VIRTUAL_ATTRIB address ATTRIB_TYPE java.lang.String
+    VIRTUAL_ATTRIB name ATTRIB_TYPE java.lang.String
+    VIRTUAL_ATTRIB email ATTRIB_TYPE java.lang.String
+    VIRTUAL_ATTRIB member_id ATTRIB_TYPE int
+    PRIMARY_KEY member_id 
+    RELATIONSHIP listLoan REFERENCES .ListLoan BYVALUE WITH member_id 
+    SQLMAP FOR phone NULLABLE
+    SQLMAP FOR address NULLABLE
+;
+CLASS .Book TABLE books
+    VIRTUAL_ATTRIB book_id ATTRIB_TYPE int
+    VIRTUAL_ATTRIB genre ATTRIB_TYPE java.lang.String
+    VIRTUAL_ATTRIB author_id ATTRIB_TYPE java.lang.Integer
+    VIRTUAL_ATTRIB isbn ATTRIB_TYPE java.lang.String
+    VIRTUAL_ATTRIB published_year ATTRIB_TYPE java.lang.Integer
+    VIRTUAL_ATTRIB title ATTRIB_TYPE java.lang.String
+    PRIMARY_KEY book_id 
+    RELATIONSHIP listLoan REFERENCES .ListLoan2 BYVALUE WITH book_id 
+    SQLMAP FOR genre NULLABLE
+    SQLMAP FOR author_id NULLABLE
+    SQLMAP FOR isbn NULLABLE
+    SQLMAP FOR published_year NULLABLE
+;
+
+COLLECTION_CLASS .ListLoan3 COLLECTION_TYPE ARRAY ELEMENT_CLASS .Loan ELEMENT_TABLE loans
+    PRIMARY_KEY book_id 
+;
+COLLECTION_CLASS .ListLoan2 COLLECTION_TYPE ARRAY ELEMENT_CLASS .Loan ELEMENT_TABLE loans
+    PRIMARY_KEY book_id 
+;
+
+CLASS .Author TABLE authors
+    VIRTUAL_ATTRIB author_id ATTRIB_TYPE int
+    VIRTUAL_ATTRIB name ATTRIB_TYPE java.lang.String
+    VIRTUAL_ATTRIB birth_year ATTRIB_TYPE java.lang.Integer
+    PRIMARY_KEY author_id 
+    RELATIONSHIP listBook REFERENCES .ListBook BYVALUE WITH author_id 
+    SQLMAP FOR birth_year NULLABLE
+;
+COLLECTION_CLASS .ListBook COLLECTION_TYPE ARRAY ELEMENT_CLASS .Book ELEMENT_TABLE books
+    PRIMARY_KEY author_id 
+;
+CLASS .Loan TABLE loans
+    VIRTUAL_ATTRIB book_id ATTRIB_TYPE java.lang.Integer
+    VIRTUAL_ATTRIB loan_id ATTRIB_TYPE int
+    VIRTUAL_ATTRIB member_id ATTRIB_TYPE java.lang.Integer
+    VIRTUAL_ATTRIB return_date ATTRIB_TYPE java.lang.String
+    VIRTUAL_ATTRIB loan_date ATTRIB_TYPE java.lang.String
+    PRIMARY_KEY loan_id 
+    SQLMAP FOR book_id NULLABLE
+    SQLMAP FOR member_id NULLABLE
+    SQLMAP FOR return_date NULLABLE
+    SQLMAP FOR loan_date NULLABLE
+;
+COLLECTION_CLASS .ListLoan COLLECTION_TYPE ARRAY ELEMENT_CLASS .Loan ELEMENT_TABLE loans
+    PRIMARY_KEY member_id 
+;

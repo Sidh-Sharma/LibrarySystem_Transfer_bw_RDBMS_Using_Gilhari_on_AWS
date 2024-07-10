@@ -1,0 +1,7 @@
+/sourcedb_aws/config/*.jar
+/sourcedb_aws/bin
+/sourcedb_aws/libs
+
+/targetdb_aws/config/*.jar
+/targetdb_aws/bin
+/targetdb_aws/libs

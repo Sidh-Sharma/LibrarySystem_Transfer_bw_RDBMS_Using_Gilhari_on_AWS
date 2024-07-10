@@ -1,0 +1,1 @@
+docker run  -p 8082:8081 gilhari5_source_mysql_aws:1.0
