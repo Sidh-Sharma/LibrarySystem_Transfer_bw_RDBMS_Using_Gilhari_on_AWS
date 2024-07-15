@@ -32,15 +32,19 @@ The project shows:
 * ~~Install jq, a command line JSON processor, from the official [source](https://jqlang.github.io/jq/). jq will help treatment of retrieved JSON data before tranfer to second database.~~
 
 ## Running the project
-* Create AWS RDS instances as required. Edit endpoints and credentials in the ```.jdx``` file(s) appropriately. Refer to the README in the ```sourcedb_aws``` and ```targetdb_aws``` folders to compile the container classes, build the docker image and finally run Gilhari. 
+* Create AWS RDS instances as required. Edit endpoints and credentials in the ```.jdx``` file(s) appropriately.
+  
+* Push the built docker images onto AWS ECR.
+  
+* On separate command terminal windows, ssh into the EC2 instance to run a Gilhari instance each. 
 
-* On separate command terminal windows, navigate to ```sourcedb_aws``` and ```targetdb_aws``` to run a Gilhari instance each.
+* Once the Gilhari instances are up and running successfully, the transfer can be performed.
 
-* Once the Gilhari instances are up and running successfully, the transfer can be performed. 
+* ```app.py``` is a Python script that uses Flask to run the backend of the web application. It sorts the retrieved JSON data by the loan_date column before posting to the postgres database.
 
-* ```Exchange.py``` uses python uses the library ```requests``` to perform REST API calls as required. It includes a function that sorts the retrieved JSON data by the loan_date column before posting to the postgres database.
+* Install the required external libraries by running ```pip install -r requirements.txt```.
 
-* Install the (only) required external library ```requests``` by running ```pip install -r requirements.txt```.
+* To access the web application, run ```app.py``` and open (http://localhost:5000).
 
 * Run the python script ```Exchange.py``` using the command ```python Transfer.py``` to intiate the transfer.
 
