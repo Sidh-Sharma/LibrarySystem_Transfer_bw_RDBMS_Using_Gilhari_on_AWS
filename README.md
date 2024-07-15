@@ -21,33 +21,39 @@ The project shows:
 
 * Read the documentation shipped with the SDK for more information about Gilhari
 
-## Configuring the project ##
+## Configuring Gilhari for general use ##
 
-* It is recommended to use Java JDK-8 (install from official sources) while using JDX related tasks with Gilhari.
+* It is recommended to use Java JDK-8 (install from official sources) while using JDX related tasks with Gilhari. 
 
-* Set environment variables for jdk, databases. Install Docker engine. 
+* Create Dockerfile and build the docker image.
 
 * Clone the repository and place your local repository in the ```examples``` folder of your local installation of Gilhari SDK.
 
-* ~~Install jq, a command line JSON processor, from the official [source](https://jqlang.github.io/jq/). jq will help treatment of retrieved JSON data before tranfer to second database.~~
-
-## Running the project
 * Create AWS RDS instances as required. Edit endpoints and credentials in the ```.jdx``` file(s) appropriately.
   
 * Push the built docker images onto AWS ECR.
   
-* On separate command terminal windows, ssh into the EC2 instance to run a Gilhari instance each. 
+* Launch an EC2 instance. Install docker and java compiler (if required) on the instance. Add inbound rules appropriately for the security group associated with the instance.
+* On separate command terminal windows, ssh again into the EC2 instance and pull the docker images to run a Gilhari instance each. 
 
-* Once the Gilhari instances are up and running successfully, the transfer can be performed.
+* ~~Install jq, a command line JSON processor, from the official [source](https://jqlang.github.io/jq/). jq will help treatment of retrieved JSON data before tranfer to second database.~~
+
+## Running this project
+* Launch an Amazon-Linux EC2 Instance (free tier), conifgure security and vpc as default. 
+  
+* Connect to the instance and install docker. Provide access to ```ec2-user```. It is advised to use PuTTY to SSH into the instance if you are using Windows. Close the connection and reconnect to let the changes to reflect.
+  
+* On separate command terminals, ssh into the EC2 instance to run a Gilhari instance each. Pull the docker images using the command ```docker pull public.ecr.aws/b5h0t6x6/glib5:latest``` and ```docker pull public.ecr.aws/b5h0t6x6/glib5:latest2```. Then run the docker images using ```docker run -p 8082:8081 public.ecr.aws/b5h0t6x6/glib5:latest``` and ```docker run -p 8083:8081 public.ecr.aws/b5h0t6x6/glib5:latest2``` respectively.
+
+* Once the Gilhari instances are up and running successfully, the transfer can be performed. Here, we use a GUI program to do the same. 
 
 * ```app.py``` is a Python script that uses Flask to run the backend of the web application. It sorts the retrieved JSON data by the loan_date column before posting to the postgres database.
 
 * Install the required external libraries by running ```pip install -r requirements.txt```.
 
-* To access the web application, run ```app.py``` and open (http://localhost:5000).
+* To access the web application, run ```app.py``` and open http://localhost:5000.
 
-* Run the python script ```Exchange.py``` using the command ```python Transfer.py``` to intiate the transfer.
-
+### There will be feature updates to GUI program eventually for added functionality. 
 
 >[!NOTE]
 >Gilhari is a product of Software Tree, LLC.
