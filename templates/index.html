@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Transfer GUI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        button, select {
+            padding: 10px;
+            margin: 10px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        #tableData, #transferResult, #postgresData {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Database Transfer GUI</h1>
+    
+    <label for="sourceTables">Select Source Table:</label>
+    <select id="sourceTables" onchange="viewTable()">
+        <option value="" selected disabled>Choose a table</option>
+        <option value="Author">Author</option>
+        <option value="Book">Book</option>
+        <option value="Loan">Loan</option>
+        <option value="Members">Members</option>
+    </select>
+    
+    <button onclick="transferData()">Transfer Data</button>
+    <button onclick="viewPostgresData()">View Transferred Data</button>
+    
+    <div id="tableData"></div>
+    <div id="transferResult"></div>
+    <div id="postgresData"></div>
+
+    <script>
+        function createTable(data) {
+            let table = '<table>';
+            table += '<tr>';
+            for (const key in data[0]) {
+                table += `<th>${key}</th>`;
+            }
+            table += '</tr>';
+            data.forEach(row => {
+                table += '<tr>';
+                for (const key in row) {
+                    table += `<td>${row[key]}</td>`;
+                }
+                table += '</tr>';
+            });
+            table += '</table>';
+            return table;
+        }
+
+        function viewTable() {
+            const selectedTable = document.getElementById('sourceTables').value;
+            if (selectedTable) {
+                fetch(`/view_table/${selectedTable}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            document.getElementById('tableData').innerHTML = createTable(data);
+                        } else {
+                            document.getElementById('tableData').innerHTML = '<p>No data found.</p>';
+                        }
+                    })
+                    .catch(error => {
+                        document.getElementById('tableData').innerHTML = `<p>Error: ${error}</p>`;
+                    });
+            }
+        }
+
+        function transferData() {
+            fetch('/transfer_data', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    let output = '<h2>Transfer Result</h2>';
+                    if (data.success) {
+                        output += `<p>${data.message}</p>`;
+                    } else {
+                        output += `<p>Error: ${data.message}</p>`;
+                    }
+                    document.getElementById('transferResult').innerHTML = output;
+                })
+                .catch(error => {
+                    document.getElementById('transferResult').innerHTML = `<p>Error: ${error}</p>`;
+                });
+        }
+
+        function viewPostgresData() {
+            fetch('/view_postgres_data')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        document.getElementById('postgresData').innerHTML = createTable(data);
+                    } else {
+                        document.getElementById('postgresData').innerHTML = '<p>No data found.</p>';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('postgresData').innerHTML = `<p>Error: ${error}</p>`;
+                });
+        }
+    </script>
+</body>
+</html>
