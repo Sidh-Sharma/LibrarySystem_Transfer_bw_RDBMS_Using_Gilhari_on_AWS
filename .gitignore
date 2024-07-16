@@ -5,3 +5,5 @@
 /targetdb_aws/config/*.jar
 /targetdb_aws/bin
 /targetdb_aws/libs
+/advapp.py
+/templates/index1.html
