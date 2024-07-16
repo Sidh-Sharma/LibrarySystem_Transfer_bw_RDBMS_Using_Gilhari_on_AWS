@@ -4,7 +4,7 @@ REM JDX is a product of Software Tree, LLC.
 REM Date: Tue Jul 02 15:59:31 IST 2024
 REM
 
-JDX_DATABASE JDX:jdbc:mysql://source-db.cj2a0e4oq8nt.ap-south-1.rds.amazonaws.com:3306/db1;USER=g5;PASSWORD=software_tree5;JDX_DBTYPE=MYSQL;DEBUG_LEVEL=3
+JDX_DATABASE JDX:jdbc:mysql://source-db.cvwgwcim6rpq.ap-south-1.rds.amazonaws.com:3306/db1;USER=admin;PASSWORD=softree_5;JDX_DBTYPE=MYSQL;DEBUG_LEVEL=3
 JDBC_DRIVER com.mysql.cj.jdbc.Driver
 JDX_OBJECT_MODEL_PACKAGE com.mycompany.gilhari5
 JDX_SUPERCLASS_NAME com.mycompany.gilhari5.jdx.JDX_JSONObject
@@ -47,10 +47,8 @@ COLLECTION_CLASS .ListLoan2 COLLECTION_TYPE ARRAY ELEMENT_CLASS .Loan ELEMENT_TA
 CLASS .Author TABLE authors
     VIRTUAL_ATTRIB author_id ATTRIB_TYPE int
     VIRTUAL_ATTRIB name ATTRIB_TYPE java.lang.String
-    VIRTUAL_ATTRIB birth_year ATTRIB_TYPE java.lang.Integer
     PRIMARY_KEY author_id 
-    RELATIONSHIP listBook REFERENCES .ListBook BYVALUE WITH author_id 
-    SQLMAP FOR birth_year NULLABLE
+    RELATIONSHIP listBook REFERENCES .ListBook BYVALUE WITH author_id
 ;
 COLLECTION_CLASS .ListBook COLLECTION_TYPE ARRAY ELEMENT_CLASS .Book ELEMENT_TABLE books
     PRIMARY_KEY author_id 

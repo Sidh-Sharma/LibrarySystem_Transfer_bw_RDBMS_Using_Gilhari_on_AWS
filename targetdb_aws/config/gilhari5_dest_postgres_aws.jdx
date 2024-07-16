@@ -1,4 +1,4 @@
-JDX_DATABASE JDX:jdbc:postgresql://tgtdb.cj2a0e4oq8nt.ap-south-1.rds.amazonaws.com:5432/db2?useSSL=false;allowPublicKeyRetrieval=true;USER=postgres;PASSWORD=psqlpwd5;JDX_DBTYPE=POSTGRES;DEBUG_LEVEL=3
+JDX_DATABASE JDX:jdbc:postgresql://targetdb.cvwgwcim6rpq.ap-south-1.rds.amazonaws.com:5432/db2?useSSL=false;allowPublicKeyRetrieval=true;USER=postgres;PASSWORD=softree_5;JDX_DBTYPE=POSTGRES;DEBUG_LEVEL=2
 JDBC_DRIVER org.postgresql.Driver
 JDX_OBJECT_MODEL_PACKAGE com.mycompany.gilhari5
 JDX_SUPERCLASS_NAME com.softwaretree.jdx.JDX_JSONObject
@@ -8,11 +8,11 @@ CLASS .LoanHist TABLE loans
     VIRTUAL_ATTRIB book_id ATTRIB_TYPE int
     VIRTUAL_ATTRIB loan_id ATTRIB_TYPE int
     VIRTUAL_ATTRIB member_id ATTRIB_TYPE int
-    VIRTUAL_ATTRIB return_date ATTRIB_TYPE java.lang.String
-    VIRTUAL_ATTRIB loan_date ATTRIB_TYPE java.lang.String
+    VIRTUAL_ATTRIB return_date ATTRIB_TYPE long
+    VIRTUAL_ATTRIB loan_date ATTRIB_TYPE long
     PRIMARY_KEY loan_id 
     SQLMAP FOR book_id NULLABLE
     SQLMAP FOR member_id NULLABLE
-    SQLMAP FOR return_date NULLABLE
-    SQLMAP FOR loan_date NULLABLE
+    SQLMAP FOR return_date SQLTYPE DATE 
+    SQLMAP FOR loan_date SQLTYPE DATE
 ;
