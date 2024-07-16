@@ -39,7 +39,7 @@ The project shows:
 * ~~Install jq, a command line JSON processor, from the official [source](https://jqlang.github.io/jq/). jq will help treatment of retrieved JSON data before tranfer to second database.~~
 
 ## Running this project
-* Launch an Amazon-Linux EC2 Instance (free tier), conifgure security and vpc as default. 
+* Launch an Amazon-Linux EC2 Instance (free tier), conifgure security and vpc as default. Note the public IPv4 address.
   
 * Connect to the instance and install docker. Provide access to ```ec2-user```. It is advised to use PuTTY to SSH into the instance if you are using Windows. Close the connection and reconnect to let the changes to reflect.
   
@@ -48,6 +48,7 @@ The project shows:
 * Once the Gilhari instances are up and running successfully, the transfer can be performed. Here, we use a GUI program to do the same. 
 
 * ```app.py``` is a Python script that uses Flask to run the backend of the web application. It sorts the retrieved JSON data by the loan_date column before posting to the postgres database.
+* Note: edit the ec2 instance IP in the app.py script according to your instance.
 
 * Install the required external libraries by running ```pip install -r requirements.txt```.
 
