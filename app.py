@@ -4,8 +4,8 @@ import requests
 app = Flask(__name__)
 
 #URLs for Gilhari microservices as running on EC2
-SOURCE_URL = "http://65.2.121.67:8082/gilhari/v1"
-TARGET_URL = "http://65.2.121.67:8083/gilhari/v1"
+SOURCE_URL = "http://13.127.81.92:8082/gilhari/v1"
+TARGET_URL = "http://13.127.81.92:8083/gilhari/v1"
 
 @app.route('/')
 def index():
@@ -30,7 +30,7 @@ def transfer_data():
         response = requests.get(source_url)
         response.raise_for_status()
         loans = response.json()
-        sorted_loans = sorted(loans, key=lambda x: x['loan_date'])
+        sorted_loans = sorted(loans, key=lambda x: x['book_id'])
         
         
         requests.delete(target_url)

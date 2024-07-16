@@ -12,11 +12,12 @@ JDX_GENERATE_ACCESSOR_METHODS FALSE
 JDX_GENERATE_JSON_MAPPINGS TRUE
 ;
 CLASS .Members TABLE members
+    VIRTUAL_ATTRIB member_id ATTRIB_TYPE int
+    VIRTUAL_ATTRIB name ATTRIB_TYPE java.lang.String
     VIRTUAL_ATTRIB phone ATTRIB_TYPE java.lang.String
     VIRTUAL_ATTRIB address ATTRIB_TYPE java.lang.String
-    VIRTUAL_ATTRIB name ATTRIB_TYPE java.lang.String
     VIRTUAL_ATTRIB email ATTRIB_TYPE java.lang.String
-    VIRTUAL_ATTRIB member_id ATTRIB_TYPE int
+    
     PRIMARY_KEY member_id 
     RELATIONSHIP listLoan REFERENCES .ListLoan BYVALUE WITH member_id 
     SQLMAP FOR phone NULLABLE
@@ -24,11 +25,13 @@ CLASS .Members TABLE members
 ;
 CLASS .Book TABLE books
     VIRTUAL_ATTRIB book_id ATTRIB_TYPE int
-    VIRTUAL_ATTRIB genre ATTRIB_TYPE java.lang.String
+    VIRTUAL_ATTRIB title ATTRIB_TYPE java.lang.String
     VIRTUAL_ATTRIB author_id ATTRIB_TYPE java.lang.Integer
+    VIRTUAL_ATTRIB genre ATTRIB_TYPE java.lang.String
+    
     VIRTUAL_ATTRIB isbn ATTRIB_TYPE java.lang.String
     VIRTUAL_ATTRIB published_year ATTRIB_TYPE java.lang.Integer
-    VIRTUAL_ATTRIB title ATTRIB_TYPE java.lang.String
+    
     PRIMARY_KEY book_id 
     RELATIONSHIP listLoan REFERENCES .ListLoan2 BYVALUE WITH book_id 
     SQLMAP FOR genre NULLABLE
