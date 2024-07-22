@@ -167,15 +167,21 @@
         </select>
 
         <label for="sortColumn">Sort By:</label>
-        <input type="text" id="sortColumn" placeholder="Column Name">
+        <select id="sortColumn">
+            <option value="" selected disabled>Choose a column</option>
+        </select>
         <button onclick="sortData()">Sort</button>
 
-        <label for="filterColumn">Filter:</label>
-        <input type="text" id="filterColumn" placeholder="Column Name">
-        <input type="text" id="filterValue" placeholder="Value">
+        <label for="filterColumn">Filter By:</label>
+        <select id="filterColumn">
+            <option value="" selected disabled>Choose a column</option>
+        </select>
+        <input type="text" id="filterValue" placeholder="Filter value">
         <button onclick="filterData()">Filter</button>
     </div>
 
+    
+      
     <div id="tableData"></div>
     <div id="transferResult"></div>
     <div id="postgresData"></div>
@@ -186,128 +192,160 @@
         <button onclick="transferData()">Transfer Data</button>
         <button onclick="viewPostgresData()">View Transferred Data</button>
         <button onclick="endApplication()">End Application</button>
-    </div>
+    </div> 
+</body>
 
     <script>
-        async function viewTable() {
-            const tableName = document.getElementById('sourceTables').value;
-            if (!tableName) return;
-
-            const response = await fetch(`/view_table/${tableName}`);
-            const data = await response.json();
-
-            let tableHTML = '<table>';
-            tableHTML += '<tr>';
-            Object.keys(data[0]).forEach(key => {
-                tableHTML += `<th>${key}</th>`;
+        function createTable(data) {
+            let table = '<table>';
+            table += '<tr>';
+            for (const key in data[0]) {
+                table += `<th>${key}</th>`;
+            }
+            table += '</tr>';
+            data.forEach(row => {
+                table += '<tr>';
+                for (const key in row) {
+                    table += `<td>${row[key]}</td>`;
+                }
+                table += '</tr>';
             });
-            tableHTML += '</tr>';
-
-            data.forEach(item => {
-                tableHTML += '<tr>';
-                Object.values(item).forEach(value => {
-                    tableHTML += `<td>${typeof value === 'object' ? JSON.stringify(value) : value}</td>`;
-                });
-                tableHTML += '</tr>';
-            });
-
-            tableHTML += '</table>';
-            document.getElementById('tableData').innerHTML = tableHTML;
+            table += '</table>';
+            return table;
         }
 
-        async function transferData() {
-            const response = await fetch('/transfer_data', {
-                method: 'POST'
-            });
-            const result = await response.json();
-            document.getElementById('transferResult').innerHTML = JSON.stringify(result, null, 2);
+        function viewTable() {
+            const selectedTable = document.getElementById('sourceTables').value;
+            if (selectedTable) {
+                clearData(); // Clear previous data
+                fetch(`/view_table/${selectedTable}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            document.getElementById('tableData').innerHTML = createTable(data);
+                            populateColumns(data);
+                        } else {
+                            document.getElementById('tableData').innerHTML = '<p>No data found.</p>';
+                        }
+                    })
+                    .catch(error => {
+                        document.getElementById('tableData').innerHTML = `<p>Error: ${error}</p>`;
+                    });
+            }
         }
 
-        async function viewPostgresData() {
-            const response = await fetch('/view_postgres_data');
-            const data = await response.json();
+        function populateColumns(data) {
+            const columns = Object.keys(data[0]);
+            const sortColumn = document.getElementById('sortColumn');
+            const filterColumn = document.getElementById('filterColumn');
 
-            let tableHTML = '<table>';
-            tableHTML += '<tr>';
-            Object.keys(data[0]).forEach(key => {
-                tableHTML += `<th>${key}</th>`;
+            sortColumn.innerHTML = '<option value="" selected disabled>Choose a column</option>';
+            filterColumn.innerHTML = '<option value="" selected disabled>Choose a column</option>';
+
+            columns.forEach(column => {
+                sortColumn.innerHTML += `<option value="${column}">${column}</option>`;
+                filterColumn.innerHTML += `<option value="${column}">${column}</option>`;
             });
-            tableHTML += '</tr>';
-
-            data.forEach(item => {
-                tableHTML += '<tr>';
-                Object.values(item).forEach(value => {
-                    tableHTML += `<td>${typeof value === 'object' ? JSON.stringify(value) : value}</td>`;
-                });
-                tableHTML += '</tr>';
-            });
-
-            tableHTML += '</table>';
-            document.getElementById('postgresData').innerHTML = tableHTML;
         }
 
-        async function filterData() {
-            const tableName = document.getElementById('sourceTables').value;
-            const filterColumn = document.getElementById('filterColumn').value;
+        function sortData() {
+            const selectedTable = document.getElementById('sourceTables').value;
+            const sortBy = document.getElementById('sortColumn').value;
+
+            if (selectedTable && sortBy) {
+                clearData(); // Clear previous data
+                fetch(`/sort_data/${selectedTable}?sort_by=${sortBy}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            document.getElementById('sortResult').innerHTML = createTable(data);
+                        } else {
+                            document.getElementById('sortResult').innerHTML = '<p>No data found.</p>';
+                        }
+                    })
+                    .catch(error => {
+                        document.getElementById('sortResult').innerHTML = `<p>Error: ${error}</p>`;
+                    });
+            }
+        }
+
+        function filterData() {
+            const selectedTable = document.getElementById('sourceTables').value;
+            const filterParam = document.getElementById('filterColumn').value;
             const filterValue = document.getElementById('filterValue').value;
-            if (!tableName || !filterColumn || !filterValue) return;
 
-            const response = await fetch(`/filter_data/${tableName}?filter=${filterColumn}&value=${filterValue}`);
-            const data = await response.json();
-
-            let tableHTML = '<table>';
-            tableHTML += '<tr>';
-            Object.keys(data[0]).forEach(key => {
-                tableHTML += `<th>${key}</th>`;
-            });
-            tableHTML += '</tr>';
-
-            data.forEach(item => {
-                tableHTML += '<tr>';
-                Object.values(item).forEach(value => {
-                    tableHTML += `<td>${typeof value === 'object' ? JSON.stringify(value) : value}</td>`;
-                });
-                tableHTML += '</tr>';
-            });
-
-            tableHTML += '</table>';
-            document.getElementById('filterResult').innerHTML = tableHTML;
+            if (selectedTable && filterParam && filterValue) {
+                clearData(); // Clear previous data
+                fetch(`/filter_data/${selectedTable}?filter=${filterParam}&value=${filterValue}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            document.getElementById('filterResult').innerHTML = createTable(data);
+                        } else {
+                            document.getElementById('filterResult').innerHTML = '<p>No data found.</p>';
+                        }
+                    })
+                    .catch(error => {
+                        document.getElementById('filterResult').innerHTML = `<p>Error: ${error}</p>`;
+                    });
+            }
         }
 
-        async function sortData() {
-            const tableName = document.getElementById('sourceTables').value;
-            const sortColumn = document.getElementById('sortColumn').value;
-            if (!tableName || !sortColumn) return;
-
-            const response = await fetch(`/sort_data/${tableName}?sort_by=${sortColumn}`);
-            const data = await response.json();
-
-            let tableHTML = '<table>';
-            tableHTML += '<tr>';
-            Object.keys(data[0]).forEach(key => {
-                tableHTML += `<th>${key}</th>`;
-            });
-            tableHTML += '</tr>';
-
-            data.forEach(item => {
-                tableHTML += '<tr>';
-                Object.values(item).forEach(value => {
-                    tableHTML += `<td>${typeof value === 'object' ? JSON.stringify(value) : value}</td>`;
+        function transferData() {
+            clearData(); // Clear previous data
+            fetch('/transfer_data', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    let output = '<h2>Transfer Result</h2>';
+                    if (data.message) {
+                        output += `<p>${data.message}</p>`;
+                    } else {
+                        output += `<p>Error: ${data.error}</p>`;
+                    }
+                    document.getElementById('transferResult').innerHTML = output;
+                })
+                .catch(error => {
+                    document.getElementById('transferResult').innerHTML = `<p>Error: ${error}</p>`;
                 });
-                tableHTML += '</tr>';
-            });
-
-            tableHTML += '</table>';
-            document.getElementById('sortResult').innerHTML = tableHTML;
         }
 
-        async function endApplication() {
-            const response = await fetch('/end_application', {
-                method: 'POST'
-            });
-            const result = await response.json();
-            alert(result.message);
+        function viewPostgresData() {
+            clearData(); // Clear previous data
+            fetch('/view_postgres_data')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        document.getElementById('postgresData').innerHTML = createTable(data);
+                    } else {
+                        document.getElementById('postgresData').innerHTML = '<p>No data found.</p>';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('postgresData').innerHTML = `<p>Error: ${error}</p>`;
+                });
+        }
+
+        function endApplication() {
+            fetch('/end_application', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        alert(data.message);
+                    } else {
+                        alert(`Error: ${data.error}`);
+                    }
+                })
+                .catch(error => {
+                    alert(`Error: ${error}`);
+                });
+        }
+
+        function clearData() {
+            document.getElementById('tableData').innerHTML = '';
+            document.getElementById('transferResult').innerHTML = '';
+            document.getElementById('postgresData').innerHTML = '';
+            document.getElementById('filterResult').innerHTML = '';
+            document.getElementById('sortResult').innerHTML = '';
         }
     </script>
-</body>
 </html>
