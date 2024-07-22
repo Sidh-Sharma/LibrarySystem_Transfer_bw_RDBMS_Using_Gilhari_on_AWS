@@ -52,7 +52,7 @@ The project shows:
 
 * Install the required external libraries by running ```pip install -r requirements.txt```.
 
-* To access the web application, run ```app.py``` and open http://localhost:5000.
+* To access the web application, run ```app.py``` and open http://localhost:80.
 
 ### There will be feature updates to GUI program eventually for added functionality. 
 
