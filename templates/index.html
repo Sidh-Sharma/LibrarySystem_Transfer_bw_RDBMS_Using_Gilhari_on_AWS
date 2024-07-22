@@ -6,218 +6,307 @@
     <title>Database Transfer GUI</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            background: linear-gradient(to bottom right, #4facfe, #00f2fe);
         }
-        button, select {
+
+        .subtitle {
+            font-size: 38px;
+            color: #333;
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
+        img {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        /* Sticky navbar styling */
+        .navbar {
+            position: sticky;
+            top: 0;
+            background: #ffffff;
             padding: 10px;
-            margin: 10px 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            z-index: 1000;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+
+        .navbar label {
+            font-weight: 600;
+            font-size: 16px;
+            color: #333;
         }
-        table, th, td {
+
+        .navbar select, .navbar button, .navbar input {
+            padding: 12px 16px;
+            border-radius: 8px;
             border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            font-family: 'Arial', sans-serif;
+            font-size: 16px;
+            transition: all 0.3s ease;
         }
+
+        .navbar button {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .navbar button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .navbar select:hover, .navbar input:hover {
+            border-color: #007bff;
+        }
+
+        .navbar input {
+            width: auto;
+        }
+
+        /* Footer button container */
+        .footer {
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            background: #67c1ea;
+            padding: 10px 0;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .footer button {
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: none;
+            background-color: #333;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .footer button:hover {
+            background-color: #555;
+            transform: scale(1.05);
+        }
+
+        /* Table styling */
+        table {
+            width: 800px;
+            border-collapse: collapse;
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
         th, td {
-            padding: 8px;
+            padding: 12px;
             text-align: left;
+            color: #333;
         }
+
+        th {
+            background-color: #f4f4f4;
+            font-weight: 600;
+        }
+
         #tableData, #transferResult, #postgresData, #filterResult, #sortResult {
             margin-top: 20px;
+        }
+
+        h1 {
+            margin: 20px 0;
+            margin-bottom: 2px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            position: sticky;
+            top: 0;
+            background: linear-gradient(to bottom right, #4facfe, #00f2fe);
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
-    <h1>Gilhari Transferring JSON data between different RDBMS on AWS</h1>
-    
-    <label for="sourceTables">Select Source Table:</label>
-    <select id="sourceTables" onchange="viewTable()">
-        <option value="" selected disabled>Choose a table</option>
-        <option value="Author">Author</option>
-        <option value="Book">Book</option>
-        <option value="Loan">Loan</option>
-        <option value="Members">Members</option>
-    </select>
-    
-    <label for="sortColumn">Sort By:</label>
-    <select id="sortColumn">
-        <option value="" selected disabled>Choose a column</option>
-    </select>
-    <button onclick="sortData()">Sort</button>
+    <h1>
+        <img src="https://www.softwaretree.com/v1/images/gilhari-logo.png" alt="Gilhari Logo" /> 
+        <span class="subtitle">Transferring JSON data between different RDBMS on AWS</span>
+    </h1>
+    <div class="navbar">
+        <label for="sourceTables">Select Source Table:</label>
+        <select id="sourceTables" onchange="viewTable()">
+            <option value="" selected disabled>Choose a table</option>
+            <option value="Author">Author</option>
+            <option value="Book">Book</option>
+            <option value="Loan">Loan</option>
+            <option value="Members">Members</option>
+        </select>
 
-    <label for="filterColumn">Filter By:</label>
-    <select id="filterColumn">
-        <option value="" selected disabled>Choose a column</option>
-    </select>
-    <input type="text" id="filterValue" placeholder="Filter value">
-    <button onclick="filterData()">Filter</button>
+        <label for="sortColumn">Sort By:</label>
+        <input type="text" id="sortColumn" placeholder="Column Name">
+        <button onclick="sortData()">Sort</button>
 
-    <button onclick="transferData()">Transfer Data</button>
-    <button onclick="viewPostgresData()">View Transferred Data</button>
-    <button onclick="endApplication()">End Application</button>
-    
+        <label for="filterColumn">Filter:</label>
+        <input type="text" id="filterColumn" placeholder="Column Name">
+        <input type="text" id="filterValue" placeholder="Value">
+        <button onclick="filterData()">Filter</button>
+    </div>
+
     <div id="tableData"></div>
     <div id="transferResult"></div>
     <div id="postgresData"></div>
     <div id="filterResult"></div>
     <div id="sortResult"></div>
 
+    <div class="footer">
+        <button onclick="transferData()">Transfer Data</button>
+        <button onclick="viewPostgresData()">View Transferred Data</button>
+        <button onclick="endApplication()">End Application</button>
+    </div>
+
     <script>
-        function createTable(data) {
-            let table = '<table>';
-            table += '<tr>';
-            for (const key in data[0]) {
-                table += `<th>${key}</th>`;
-            }
-            table += '</tr>';
-            data.forEach(row => {
-                table += '<tr>';
-                for (const key in row) {
-                    table += `<td>${row[key]}</td>`;
-                }
-                table += '</tr>';
+        async function viewTable() {
+            const tableName = document.getElementById('sourceTables').value;
+            if (!tableName) return;
+
+            const response = await fetch(`/view_table/${tableName}`);
+            const data = await response.json();
+
+            let tableHTML = '<table>';
+            tableHTML += '<tr>';
+            Object.keys(data[0]).forEach(key => {
+                tableHTML += `<th>${key}</th>`;
             });
-            table += '</table>';
-            return table;
-        }
+            tableHTML += '</tr>';
 
-        function viewTable() {
-            const selectedTable = document.getElementById('sourceTables').value;
-            if (selectedTable) {
-                clearData(); // Clear previous data
-                fetch(`/view_table/${selectedTable}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.length > 0) {
-                            document.getElementById('tableData').innerHTML = createTable(data);
-                            populateColumns(data);
-                        } else {
-                            document.getElementById('tableData').innerHTML = '<p>No data found.</p>';
-                        }
-                    })
-                    .catch(error => {
-                        document.getElementById('tableData').innerHTML = `<p>Error: ${error}</p>`;
-                    });
-            }
-        }
-
-        function populateColumns(data) {
-            const columns = Object.keys(data[0]);
-            const sortColumn = document.getElementById('sortColumn');
-            const filterColumn = document.getElementById('filterColumn');
-
-            sortColumn.innerHTML = '<option value="" selected disabled>Choose a column</option>';
-            filterColumn.innerHTML = '<option value="" selected disabled>Choose a column</option>';
-
-            columns.forEach(column => {
-                sortColumn.innerHTML += `<option value="${column}">${column}</option>`;
-                filterColumn.innerHTML += `<option value="${column}">${column}</option>`;
+            data.forEach(item => {
+                tableHTML += '<tr>';
+                Object.values(item).forEach(value => {
+                    tableHTML += `<td>${typeof value === 'object' ? JSON.stringify(value) : value}</td>`;
+                });
+                tableHTML += '</tr>';
             });
+
+            tableHTML += '</table>';
+            document.getElementById('tableData').innerHTML = tableHTML;
         }
 
-        function sortData() {
-            const selectedTable = document.getElementById('sourceTables').value;
-            const sortBy = document.getElementById('sortColumn').value;
-
-            if (selectedTable && sortBy) {
-                clearData(); // Clear previous data
-                fetch(`/sort_data/${selectedTable}?sort_by=${sortBy}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.length > 0) {
-                            document.getElementById('sortResult').innerHTML = createTable(data);
-                        } else {
-                            document.getElementById('sortResult').innerHTML = '<p>No data found.</p>';
-                        }
-                    })
-                    .catch(error => {
-                        document.getElementById('sortResult').innerHTML = `<p>Error: ${error}</p>`;
-                    });
-            }
+        async function transferData() {
+            const response = await fetch('/transfer_data', {
+                method: 'POST'
+            });
+            const result = await response.json();
+            document.getElementById('transferResult').innerHTML = JSON.stringify(result, null, 2);
         }
 
-        function filterData() {
-            const selectedTable = document.getElementById('sourceTables').value;
-            const filterParam = document.getElementById('filterColumn').value;
+        async function viewPostgresData() {
+            const response = await fetch('/view_postgres_data');
+            const data = await response.json();
+
+            let tableHTML = '<table>';
+            tableHTML += '<tr>';
+            Object.keys(data[0]).forEach(key => {
+                tableHTML += `<th>${key}</th>`;
+            });
+            tableHTML += '</tr>';
+
+            data.forEach(item => {
+                tableHTML += '<tr>';
+                Object.values(item).forEach(value => {
+                    tableHTML += `<td>${typeof value === 'object' ? JSON.stringify(value) : value}</td>`;
+                });
+                tableHTML += '</tr>';
+            });
+
+            tableHTML += '</table>';
+            document.getElementById('postgresData').innerHTML = tableHTML;
+        }
+
+        async function filterData() {
+            const tableName = document.getElementById('sourceTables').value;
+            const filterColumn = document.getElementById('filterColumn').value;
             const filterValue = document.getElementById('filterValue').value;
+            if (!tableName || !filterColumn || !filterValue) return;
 
-            if (selectedTable && filterParam && filterValue) {
-                clearData(); // Clear previous data
-                fetch(`/filter_data/${selectedTable}?filter=${filterParam}&value=${filterValue}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.length > 0) {
-                            document.getElementById('filterResult').innerHTML = createTable(data);
-                        } else {
-                            document.getElementById('filterResult').innerHTML = '<p>No data found.</p>';
-                        }
-                    })
-                    .catch(error => {
-                        document.getElementById('filterResult').innerHTML = `<p>Error: ${error}</p>`;
-                    });
-            }
-        }
+            const response = await fetch(`/filter_data/${tableName}?filter=${filterColumn}&value=${filterValue}`);
+            const data = await response.json();
 
-        function transferData() {
-            clearData(); // Clear previous data
-            fetch('/transfer_data', { method: 'POST' })
-                .then(response => response.json())
-                .then(data => {
-                    let output = '<h2>Transfer Result</h2>';
-                    if (data.message) {
-                        output += `<p>${data.message}</p>`;
-                    } else {
-                        output += `<p>Error: ${data.error}</p>`;
-                    }
-                    document.getElementById('transferResult').innerHTML = output;
-                })
-                .catch(error => {
-                    document.getElementById('transferResult').innerHTML = `<p>Error: ${error}</p>`;
+            let tableHTML = '<table>';
+            tableHTML += '<tr>';
+            Object.keys(data[0]).forEach(key => {
+                tableHTML += `<th>${key}</th>`;
+            });
+            tableHTML += '</tr>';
+
+            data.forEach(item => {
+                tableHTML += '<tr>';
+                Object.values(item).forEach(value => {
+                    tableHTML += `<td>${typeof value === 'object' ? JSON.stringify(value) : value}</td>`;
                 });
+                tableHTML += '</tr>';
+            });
+
+            tableHTML += '</table>';
+            document.getElementById('filterResult').innerHTML = tableHTML;
         }
 
-        function viewPostgresData() {
-            clearData(); // Clear previous data
-            fetch('/view_postgres_data')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.length > 0) {
-                        document.getElementById('postgresData').innerHTML = createTable(data);
-                    } else {
-                        document.getElementById('postgresData').innerHTML = '<p>No data found.</p>';
-                    }
-                })
-                .catch(error => {
-                    document.getElementById('postgresData').innerHTML = `<p>Error: ${error}</p>`;
+        async function sortData() {
+            const tableName = document.getElementById('sourceTables').value;
+            const sortColumn = document.getElementById('sortColumn').value;
+            if (!tableName || !sortColumn) return;
+
+            const response = await fetch(`/sort_data/${tableName}?sort_by=${sortColumn}`);
+            const data = await response.json();
+
+            let tableHTML = '<table>';
+            tableHTML += '<tr>';
+            Object.keys(data[0]).forEach(key => {
+                tableHTML += `<th>${key}</th>`;
+            });
+            tableHTML += '</tr>';
+
+            data.forEach(item => {
+                tableHTML += '<tr>';
+                Object.values(item).forEach(value => {
+                    tableHTML += `<td>${typeof value === 'object' ? JSON.stringify(value) : value}</td>`;
                 });
+                tableHTML += '</tr>';
+            });
+
+            tableHTML += '</table>';
+            document.getElementById('sortResult').innerHTML = tableHTML;
         }
 
-        function endApplication() {
-            fetch('/end_application', { method: 'POST' })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.message) {
-                        alert(data.message);
-                    } else {
-                        alert(`Error: ${data.error}`);
-                    }
-                })
-                .catch(error => {
-                    alert(`Error: ${error}`);
-                });
-        }
-
-        function clearData() {
-            document.getElementById('tableData').innerHTML = '';
-            document.getElementById('transferResult').innerHTML = '';
-            document.getElementById('postgresData').innerHTML = '';
-            document.getElementById('filterResult').innerHTML = '';
-            document.getElementById('sortResult').innerHTML = '';
+        async function endApplication() {
+            const response = await fetch('/end_application', {
+                method: 'POST'
+            });
+            const result = await response.json();
+            alert(result.message);
         }
     </script>
 </body>

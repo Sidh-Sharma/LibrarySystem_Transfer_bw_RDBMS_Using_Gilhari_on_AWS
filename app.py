@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, json, render_template, request, jsonify
 import requests
 from functools import wraps
 
@@ -26,7 +26,25 @@ def index():
 def view_table(table_name):
     response = requests.get(f"{SOURCE_URL}/{table_name}")
     response.raise_for_status()
-    return jsonify(response.json())
+    data = response.json()
+
+    def convert_to_json_str(data, key):
+        if isinstance(data.get(key), str):
+            data[key] = json.loads(data[key])
+        if isinstance(data.get(key), list):
+            data[key] = json.dumps(data[key])
+
+    if table_name == "Author":
+        for author in data:
+            convert_to_json_str(author, 'listBook')
+    elif table_name == "Book":
+        for book in data:
+            convert_to_json_str(book, 'listLoan')
+    elif table_name == "Members":
+        for member in data:
+            convert_to_json_str(member, 'listLoan')
+
+    return jsonify(data)
 
 @app.route('/transfer_data', methods=['POST'])
 @handle_request_exception
@@ -38,7 +56,7 @@ def transfer_data():
     response.raise_for_status()
     loans = response.json()
     
-    response=requests.delete(target_url)
+    response = requests.delete(target_url)
     response.raise_for_status()
     
     data = {"entity": loans}
@@ -78,23 +96,10 @@ def sort_data(table_name):
     response = requests.get(f"{SOURCE_URL}/{table_name}?filter=ORDER+BY+{sort_by}")
     response.raise_for_status()
     return jsonify(response.json())
-@app.route('/view_authors', methods=['GET'])
-def view_authors():
-    try:
-        response = requests.get(f"{SOURCE_URL}/Author")
-        response.raise_for_status()
-        authors = response.json()
-        
-        for author in authors:
-            if 'listBook' in author:
-                author['books'] = json.loads(author['listBook'])
-                del author['listBook']
-        
-        return jsonify(authors)
-    except requests.RequestException as e:
-        return jsonify({"error": str(e)}), 500
 
-@app.route('/end_application')
+
+
+@app.route('/end_application', methods=['POST'])
 @handle_request_exception
 def end_application():
     requests.get(f"{SOURCE_URL}/quit/now")
@@ -102,4 +107,4 @@ def end_application():
     return jsonify({"message": "Application is closed"})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',port='80',debug=True)
+    app.run(host='0.0.0.0', port=80, debug=True)
